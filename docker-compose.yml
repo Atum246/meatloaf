@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  meatloaf:
+    build: .
+    image: meatloaf:latest
+    container_name: meatloaf-runtime
+    privileged: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - meatloaf-data:/root/.meatloaf
+    environment:
+      - MEATLOAF_AGENT=docker
+    ports:
+      - "9999:9999"
+    restart: unless-stopped
+
+volumes:
+  meatloaf-data:

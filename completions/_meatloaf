@@ -1,0 +1,102 @@
+#compdef meatloaf ml
+
+_meatloaf() {
+  local -a commands
+  commands=(
+    'create:🆕 Create a new sandbox'
+    'destroy:💀 Destroy a sandbox'
+    'list:📋 List all sandboxes'
+    'inspect:🔍 Inspect sandbox details'
+    'stop:⏹️ Stop a sandbox'
+    'start:🟢 Start a sandbox'
+    'exec:▶️ Execute a command'
+    'script:📜 Run a script file'
+    'upload:⬆️ Upload file'
+    'download:⬇️ Download file'
+    'test:🌐 Test HTTP endpoint'
+    'batch:🧪 Run batch tests'
+    'wait:⏳ Wait for endpoint'
+    'screenshot:📸 Capture screenshot'
+    'html:📄 HTML snapshot'
+    'logs:📋 View logs'
+    'stats:📊 Resource usage'
+    'cleanup:🧹 Clean orphans'
+    'init:🚀 Initialize project'
+    'templates:📚 List templates'
+    'up:🔥 Full lifecycle deploy'
+    'agent:🤖 AI agent helpers'
+    'network:🌐 Network management'
+    'volume:💾 Volume management'
+    'image:🖼️ Image management'
+    'compose:🎼 Multi-container'
+    'ps:🔄 Process management'
+    'fs:📁 Filesystem ops'
+    'snapshot:📸 Snapshots'
+    'shell:🐚 Interactive shell'
+    'bench:⚡ Load testing'
+    'health:🏥 Health checks'
+    'port:🔌 Port management'
+    'system:🧹 System ops'
+    'secrets:🔐 Secrets management'
+    'env:📋 Environment profiles'
+    'watch:👁️ Watch mode'
+    'proxy:🔀 Proxy & tunnel'
+    'cron:⏰ Scheduled tasks'
+    'diff:🔀 Compare files'
+    'monitor:📊 Live dashboard'
+    'git:📁 Git operations'
+    'sync:🔄 File sync'
+    'audit:📋 Audit logging'
+    'quota:📊 Resource quotas'
+    'discover:🌐 Service discovery'
+  )
+
+  _arguments \
+    '(-V --version)'{-V,--version}'[Show version]' \
+    '(-h --help)'{-h,--help}'[Show help]' \
+    '--json[JSON output]' \
+    '--quiet[Suppress banner]' \
+    '--debug[Debug mode]' \
+    '1:command:->command' \
+    '*::arg:->args'
+
+  case $state in
+    command)
+      _describe 'command' commands
+      ;;
+    args)
+      case $words[1] in
+        create)
+          _arguments \
+            '--image[Docker image]:image:' \
+            '(--p --port)'{-p,--port}'[Port mapping]:port:' \
+            '(--e --env)'{-e,--env}'[Environment]:env:' \
+            '(--v --volume)'{-v,--volume}'[Volume]:volume:' \
+            '(--w --workdir)'{-w,--workdir}'[Workdir]:dir:' \
+            '(--m --memory)'{-m,--memory}'[Memory MB]:mb:' \
+            '(--c --cpu)'{-c,--cpu}'[CPU cores]:cores:'
+          ;;
+        network)
+          _arguments '1:subcommand:(create list remove connect disconnect inspect)'
+          ;;
+        volume)
+          _arguments '1:subcommand:(create list remove inspect prune)'
+          ;;
+        image)
+          _arguments '1:subcommand:(list pull remove build inspect history tag prune)'
+          ;;
+        fs)
+          _arguments '1:subcommand:(ls cat find write mkdir rm du grep)'
+          ;;
+        secrets)
+          _arguments '1:subcommand:(set get list remove inject export import)'
+          ;;
+        git)
+          _arguments '1:subcommand:(clone status commit push diff log)'
+          ;;
+      esac
+      ;;
+  esac
+}
+
+_meatloaf "$@"

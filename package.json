@@ -1,0 +1,68 @@
+{
+  "name": "meatloaf",
+  "version": "1.0.0",
+  "description": "🥩 Meatloaf — AI Agent Sandbox Runtime. Build. Run. Test. Ship.",
+  "main": "src/lib/index.js",
+  "bin": {
+    "meatloaf": "./bin/meatloaf.js",
+    "ml": "./bin/meatloaf.js"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node tests/integration.test.js",
+    "mcp": "node src/mcp/server.js"
+  },
+  "keywords": [
+    "ai",
+    "agent",
+    "sandbox",
+    "docker",
+    "testing",
+    "cli",
+    "runtime",
+    "openclaw",
+    "claude",
+    "cursor",
+    "mcp",
+    "devtools",
+    "container",
+    "deployment",
+    "benchmark",
+    "health-check",
+    "secrets"
+  ],
+  "author": "Meatloaf Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/meatloaf-ai/meatloaf.git"
+  },
+  "homepage": "https://meatloaf.ai",
+  "bugs": {
+    "url": "https://github.com/meatloaf-ai/meatloaf/issues"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "axios": "^1.6.0",
+    "chalk": "^4.1.2",
+    "cli-table3": "^0.6.3",
+    "commander": "^11.1.0",
+    "dockerode": "^4.0.2",
+    "ora": "^5.4.1",
+    "portfinder": "^1.0.32",
+    "uuid": "^9.0.0",
+    "ws": "^8.16.0",
+    "yaml": "^2.3.4"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "completions/",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ]
+}
