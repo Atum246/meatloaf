@@ -1,6 +1,6 @@
 {
-  "name": "meatloaf",
-  "version": "1.0.0",
+  "name": "meatloaf-cli",
+  "version": "1.0.1",
   "description": "🥩 Meatloaf — AI Agent Sandbox Runtime. Build. Run. Test. Ship.",
   "main": "src/lib/index.js",
   "bin": {
