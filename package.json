@@ -1,6 +1,6 @@
 {
   "name": "meatloaf-cli",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "🥩 Meatloaf — AI Agent Sandbox Runtime. Build. Run. Test. Ship.",
   "main": "src/lib/index.js",
   "bin": {
@@ -37,7 +37,7 @@
     "type": "git",
     "url": "git+https://github.com/Atum246/meatloaf.git"
   },
-  "homepage": "https://github.com/Atum246/meatloaf#readme",
+  "homepage": "https://atum246.github.io/meatloaf/",
   "bugs": {
     "url": "https://github.com/Atum246/meatloaf/issues"
   },
