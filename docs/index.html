@@ -1,394 +1,791 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🥩 Meatloaf — AI Agent Sandbox Runtime</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        :root {
-            --orange: #FF6B35;
-            --dark: #0a0a0f;
-            --darker: #060609;
-            --card: #12121a;
-            --border: #1e1e2e;
-            --text: #e0e0e0;
-            --muted: #888;
-            --green: #22c55e;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            background: var(--dark);
-            color: var(--text);
-            line-height: 1.6;
-        }
-        
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
-        
-        /* Hero */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at center, rgba(255,107,53,0.08) 0%, transparent 50%);
-            animation: pulse 8s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.1); opacity: 1; }
-        }
-        
-        .logo {
-            font-size: clamp(3rem, 8vw, 6rem);
-            font-weight: 900;
-            color: var(--orange);
-            text-shadow: 0 0 60px rgba(255,107,53,0.3);
-            position: relative;
-            z-index: 1;
-            letter-spacing: -2px;
-        }
-        
-        .tagline {
-            font-size: clamp(1.2rem, 3vw, 2rem);
-            color: var(--muted);
-            margin: 16px 0 40px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .tagline strong { color: var(--orange); }
-        
-        .hero-buttons {
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-            justify-content: center;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .btn {
-            padding: 14px 32px;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.2s;
-            cursor: pointer;
-            border: none;
-        }
-        
-        .btn-primary {
-            background: var(--orange);
-            color: #fff;
-        }
-        
-        .btn-primary:hover {
-            background: #e55a25;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(255,107,53,0.3);
-        }
-        
-        .btn-secondary {
-            background: var(--card);
-            color: var(--text);
-            border: 1px solid var(--border);
-        }
-        
-        .btn-secondary:hover {
-            border-color: var(--orange);
-        }
-        
-        .install-cmd {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 16px 24px;
-            margin-top: 32px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1.1rem;
-            color: var(--green);
-            position: relative;
-            z-index: 1;
-        }
-        
-        .install-cmd span { color: var(--muted); }
-        
-        /* Stats */
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 24px;
-            padding: 80px 0;
-        }
-        
-        .stat {
-            text-align: center;
-            padding: 24px;
-            background: var(--card);
-            border-radius: 12px;
-            border: 1px solid var(--border);
-        }
-        
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--orange);
-        }
-        
-        .stat-label {
-            color: var(--muted);
-            font-size: 0.9rem;
-            margin-top: 4px;
-        }
-        
-        /* Features */
-        .features { padding: 80px 0; }
-        
-        .section-title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            text-align: center;
-            margin-bottom: 16px;
-        }
-        
-        .section-subtitle {
-            text-align: center;
-            color: var(--muted);
-            margin-bottom: 48px;
-            font-size: 1.1rem;
-        }
-        
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
-        }
-        
-        .feature {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 32px;
-            transition: all 0.2s;
-        }
-        
-        .feature:hover {
-            border-color: var(--orange);
-            transform: translateY(-4px);
-        }
-        
-        .feature-icon {
-            font-size: 2rem;
-            margin-bottom: 16px;
-        }
-        
-        .feature h3 {
-            font-size: 1.2rem;
-            margin-bottom: 8px;
-        }
-        
-        .feature p {
-            color: var(--muted);
-            font-size: 0.95rem;
-        }
-        
-        /* Code example */
-        .code-section { padding: 80px 0; }
-        
-        .code-block {
-            background: var(--darker);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 24px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            overflow-x: auto;
-            line-height: 1.8;
-        }
-        
-        .code-block .comment { color: #6a737d; }
-        .code-block .cmd { color: var(--orange); }
-        .code-block .output { color: var(--green); }
-        .code-block .string { color: #a5d6ff; }
-        
-        /* Agent support */
-        .agents {
-            display: flex;
-            justify-content: center;
-            gap: 32px;
-            flex-wrap: wrap;
-            padding: 40px 0;
-        }
-        
-        .agent-badge {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 12px 24px;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-        
-        .agent-badge:hover { border-color: var(--orange); }
-        
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 40px 0;
-            color: var(--muted);
-            border-top: 1px solid var(--border);
-        }
-        
-        footer a { color: var(--orange); text-decoration: none; }
-        footer a:hover { text-decoration: underline; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meatloaf — AI Agent Sandbox Runtime</title>
+  <meta name="description" content="Give AI agents a body. Build, run, test, and ship applications autonomously.">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #0a0a0a;
+      --surface: #111111;
+      --surface-2: #1a1a1a;
+      --border: #222222;
+      --text: #e0e0e0;
+      --text-dim: #888888;
+      --accent: #e85d3a;
+      --accent-dim: #c44a2a;
+      --green: #4ade80;
+      --blue: #60a5fa;
+      --yellow: #facc15;
+      --mono: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Consolas, monospace;
+      --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(10, 10, 10, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-brand {
+      font-family: var(--mono);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-brand span {
+      color: var(--accent);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--text-dim);
+      font-size: 0.875rem;
+      transition: color 0.15s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .nav-links .btn-nav {
+      background: var(--accent);
+      color: #fff;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+
+    .nav-links .btn-nav:hover {
+      background: var(--accent-dim);
+      text-decoration: none;
+    }
+
+    /* HERO */
+    .hero {
+      padding: 10rem 2rem 6rem;
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.3rem 1rem;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      margin-bottom: 2rem;
+      font-family: var(--mono);
+    }
+
+    .hero-badge .dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      margin-right: 0.5rem;
+      vertical-align: middle;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 .accent {
+      color: var(--accent);
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text-dim);
+      max-width: 600px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 3rem;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      padding: 0.75rem 1.75rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: background 0.15s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-dim);
+      text-decoration: none;
+    }
+
+    .btn-secondary {
+      background: var(--surface-2);
+      color: var(--text);
+      padding: 0.75rem 1.75rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border: 1px solid var(--border);
+      transition: border-color 0.15s;
+      cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--text-dim);
+      text-decoration: none;
+    }
+
+    /* TERMINAL */
+    .terminal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      text-align: left;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .terminal-bar {
+      background: var(--surface-2);
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .terminal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .terminal-dot.red { background: #ff5f57; }
+    .terminal-dot.yellow { background: #febc2e; }
+    .terminal-dot.green { background: #28c840; }
+
+    .terminal-title {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-left: 0.5rem;
+    }
+
+    .terminal-body {
+      padding: 1.25rem;
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+
+    .terminal-body .prompt {
+      color: var(--green);
+    }
+
+    .terminal-body .cmd {
+      color: var(--text);
+    }
+
+    .terminal-body .comment {
+      color: var(--text-dim);
+    }
+
+    .terminal-body .output {
+      color: var(--blue);
+    }
+
+    .terminal-body .highlight {
+      color: var(--accent);
+    }
+
+    /* PROBLEM SECTION */
+    .problem {
+      padding: 6rem 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+      line-height: 1.2;
+    }
+
+    .problem p {
+      color: var(--text-dim);
+      font-size: 1.05rem;
+      max-width: 650px;
+      line-height: 1.7;
+      margin-bottom: 3rem;
+    }
+
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .problem-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem;
+    }
+
+    .problem-card .icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .problem-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .problem-card p {
+      font-size: 0.875rem;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    /* FEATURES */
+    .features {
+      padding: 6rem 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .features .section-title {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .features .section-label {
+      text-align: center;
+    }
+
+    .features > p {
+      text-align: center;
+      color: var(--text-dim);
+      max-width: 550px;
+      margin: 0 auto 3rem;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .feature-item {
+      background: var(--surface);
+      padding: 1.5rem;
+    }
+
+    .feature-item .f-icon {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .feature-item h3 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .feature-item p {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    /* COMMANDS */
+    .commands {
+      padding: 6rem 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .commands .section-title {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .commands .section-label {
+      text-align: center;
+    }
+
+    .cmd-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 2rem;
+    }
+
+    .cmd-table th {
+      text-align: left;
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+    }
+
+    .cmd-table td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.875rem;
+    }
+
+    .cmd-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .cmd-table code {
+      font-family: var(--mono);
+      background: var(--surface-2);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      color: var(--accent);
+    }
+
+    .cmd-table .desc {
+      color: var(--text-dim);
+    }
+
+    /* INSTALL */
+    .install {
+      padding: 6rem 2rem;
+      max-width: 700px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .install .section-title {
+      margin-bottom: 1.5rem;
+    }
+
+    .install-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      font-family: var(--mono);
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .install-box code {
+      color: var(--green);
+      white-space: nowrap;
+    }
+
+    .copy-btn {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-family: var(--sans);
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .copy-btn:hover {
+      border-color: var(--text-dim);
+      color: var(--text);
+    }
+
+    .copy-btn.copied {
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    .install-links {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .install-links a {
+      color: var(--text-dim);
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .install-links a:hover {
+      color: var(--text);
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 3rem 2rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.8rem;
+    }
+
+    footer a {
+      color: var(--text-dim);
+    }
+
+    footer a:hover {
+      color: var(--text);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 640px) {
+      nav {
+        padding: 0 1rem;
+      }
+
+      .nav-links a:not(.btn-nav) {
+        display: none;
+      }
+
+      .hero {
+        padding: 8rem 1.5rem 4rem;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .terminal-body {
+        font-size: 0.75rem;
+      }
+
+      .install-box {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
 </head>
 <body>
-    <section class="hero">
-        <div class="container">
-            <div class="logo">🥩 MEATLOAF</div>
-            <p class="tagline">The <strong>AI Agent Sandbox Runtime</strong><br>Build. Run. Test. Ship. 🚀</p>
-            
-            <div class="hero-buttons">
-                <a href="https://github.com/meatloaf-ai/meatloaf" class="btn btn-primary">⭐ GitHub</a>
-                <a href="https://www.npmjs.com/package/meatloaf" class="btn btn-secondary">📦 npm</a>
-                <a href="https://docs.meatloaf.ai" class="btn btn-secondary">📚 Docs</a>
-            </div>
-            
-            <div class="install-cmd">
-                <span>$</span> npm install -g meatloaf
-            </div>
-        </div>
-    </section>
-    
-    <div class="container">
-        <section class="stats">
-            <div class="stat">
-                <div class="stat-number">49</div>
-                <div class="stat-label">CLI Commands</div>
-            </div>
-            <div class="stat">
-                <div class="stat-number">7K+</div>
-                <div class="stat-label">Lines of Code</div>
-            </div>
-            <div class="stat">
-                <div class="stat-number">39</div>
-                <div class="stat-label">Source Files</div>
-            </div>
-            <div class="stat">
-                <div class="stat-number">724</div>
-                <div class="stat-label">req/s Benchmark</div>
-            </div>
-        </section>
-        
-        <section class="features">
-            <h2 class="section-title">Why Meatloaf?</h2>
-            <p class="section-subtitle">AI agents can write code. Meatloaf lets them <strong>build, test, and ship</strong> it.</p>
-            
-            <div class="feature-grid">
-                <div class="feature">
-                    <div class="feature-icon">🐳</div>
-                    <h3>Docker Sandboxes</h3>
-                    <p>Spin up isolated containers in seconds. Full lifecycle management — create, start, stop, destroy.</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">⚡</div>
-                    <h3>HTTP Testing</h3>
-                    <p>Test endpoints, run batch tests, benchmark with latency percentiles. 724 req/s throughput.</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">📁</div>
-                    <h3>Filesystem Access</h3>
-                    <p>Read, write, search, and manage files inside sandboxes. Full filesystem operations.</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">🔐</div>
-                    <h3>Encrypted Secrets</h3>
-                    <p>AES-256-CBC encrypted secret storage. Inject secrets into sandboxes securely.</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">🎼</div>
-                    <h3>Multi-Container</h3>
-                    <p>Docker Compose-style orchestration. Define services in YAML and deploy stacks.</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">🤖</div>
-                    <h3>AI Agent Native</h3>
-                    <p>JSON output on every command. MCP server for Claude/GPT/Gemini integration.</p>
-                </div>
-            </div>
-        </section>
-        
-        <section class="code-section">
-            <h2 class="section-title">See It In Action</h2>
-            <p class="section-subtitle">From zero to a running, tested app in 4 commands.</p>
-            
-            <div class="code-block">
-<span class="comment"># Create a sandbox with port mapping</span>
-<span class="cmd">$</span> meatloaf create --image node:20-alpine -p 3000:3000
-<span class="output">✔ Sandbox created: sandbox-abc123</span>
 
-<span class="comment"># Install dependencies and start the app</span>
-<span class="cmd">$</span> meatloaf exec sandbox-abc123 "npm install && node server.js &"
-
-<span class="comment"># Test the endpoint</span>
-<span class="cmd">$</span> meatloaf test http://localhost:3000/
-<span class="output">GET http://localhost:3000/ → 200 OK (12ms)</span>
-<span class="output">{"message": "Hello from Meatloaf! 🥩", "status": "running"}</span>
-
-<span class="comment"># Benchmark it</span>
-<span class="cmd">$</span> meatloaf bench http://localhost:3000/ -n 1000 -c 50
-<span class="output">⚡ 724 req/s | 100% success | P50: 5ms | P95: 26ms</span>
-
-<span class="comment"># Clean up</span>
-<span class="cmd">$</span> meatloaf destroy sandbox-abc123
-<span class="output">✔ Sandbox destroyed and cleaned up 🧹</span>
-            </div>
-        </section>
-        
-        <section style="padding: 80px 0; text-align: center;">
-            <h2 class="section-title">Works With Your AI Agent</h2>
-            <p class="section-subtitle">Seamless integration with every major AI coding platform.</p>
-            
-            <div class="agents">
-                <div class="agent-badge">🤖 OpenClaw</div>
-                <div class="agent-badge">🧠 Claude Code</div>
-                <div class="agent-badge">✏️ Cursor</div>
-                <div class="agent-badge">💻 VS Code</div>
-                <div class="agent-badge">🔧 GitHub Copilot</div>
-                <div class="agent-badge">🌐 Any Terminal</div>
-            </div>
-        </section>
+  <!-- NAV -->
+  <nav>
+    <div class="nav-brand">🥩 <span>meatloaf</span></div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#commands">Commands</a>
+      <a href="https://github.com/Atum246/meatloaf">GitHub</a>
+      <a href="https://www.npmjs.com/package/meatloaf-cli" class="btn-nav">npm</a>
     </div>
-    
-    <footer>
-        <div class="container">
-            <p>🥩 Meatloaf v1.0.0 — Built with ❤️ for AI agents everywhere</p>
-            <p style="margin-top: 8px;">
-                <a href="https://github.com/meatloaf-ai/meatloaf">GitHub</a> · 
-                <a href="https://www.npmjs.com/package/meatloaf">npm</a> · 
-                <a href="https://docs.meatloaf.ai">Docs</a> · 
-                <a href="https://discord.gg/meatloaf">Discord</a>
-            </p>
-        </div>
-    </footer>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge"><span class="dot"></span>npm install -g meatloaf-cli</div>
+    <h1>Give AI agents<br>a <span class="accent">body</span></h1>
+    <p>AI agents write code. Meatloaf lets them build, run, test, and ship it. One CLI to bridge the gap between generating code and delivering working software.</p>
+    <div class="hero-actions">
+      <a href="https://www.npmjs.com/package/meatloaf-cli" class="btn-primary">Get Started →</a>
+      <a href="https://github.com/Atum246/meatloaf" class="btn-secondary">View on GitHub</a>
+    </div>
+
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="terminal-dot red"></div>
+        <div class="terminal-dot yellow"></div>
+        <div class="terminal-dot green"></div>
+        <span class="terminal-title">terminal</span>
+      </div>
+      <div class="terminal-body">
+        <div><span class="comment"># Install meatloaf</span></div>
+        <div><span class="prompt">$</span> <span class="cmd">npm install -g meatloaf-cli</span></div>
+        <div>&nbsp;</div>
+        <div><span class="comment"># Create a sandbox</span></div>
+        <div><span class="prompt">$</span> <span class="cmd">meatloaf create --image node:20-alpine</span></div>
+        <div><span class="output">✓ Sandbox created: abc123</span></div>
+        <div>&nbsp;</div>
+        <div><span class="comment"># Run your app</span></div>
+        <div><span class="prompt">$</span> <span class="cmd">meatloaf exec abc123 "npm start"</span></div>
+        <div><span class="output">✓ Server running on port 3000</span></div>
+        <div>&nbsp;</div>
+        <div><span class="comment"># Test it</span></div>
+        <div><span class="prompt">$</span> <span class="cmd">meatloaf test --url http://localhost:3000</span></div>
+        <div><span class="highlight">✓ 200 OK — 12ms</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROBLEM -->
+  <section class="problem" id="problem">
+    <div class="section-label">The Problem</div>
+    <h2 class="section-title">AI agents can write code.<br>They can't run it.</h2>
+    <p>Language models generate thousands of lines of code but have no way to execute, test, or see the results. They're all brain, no body.</p>
+
+    <div class="problem-grid">
+      <div class="problem-card">
+        <div class="icon">🚫</div>
+        <h3>Can't start services</h3>
+        <p>No way to spin up a server, connect to a database, or interact with running processes.</p>
+      </div>
+      <div class="problem-card">
+        <div class="icon">🙈</div>
+        <h3>Can't see output</h3>
+        <p>No visual feedback. Can't take screenshots, check renders, or verify what the app looks like.</p>
+      </div>
+      <div class="problem-card">
+        <div class="icon">🧪</div>
+        <h3>Can't test</h3>
+        <p>No ability to hit endpoints, check responses, or verify that code actually works.</p>
+      </div>
+      <div class="problem-card">
+        <div class="icon">🐛</div>
+        <h3>Can't debug</h3>
+        <p>No real-time feedback loop. Can't read logs, catch errors, or iterate on failures.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <div class="section-label">The Solution</div>
+    <h2 class="section-title">Everything an agent needs</h2>
+    <p>Meatloaf gives AI agents full control over the build-test-ship lifecycle through isolated Docker sandboxes.</p>
+
+    <div class="feature-grid">
+      <div class="feature-item">
+        <div class="f-icon">📦</div>
+        <h3>Sandboxes</h3>
+        <p>Isolated Docker containers. Create, destroy, start, stop.</p>
+      </div>
+      <div class="feature-item">
+        <div class="f-icon">▶️</div>
+        <h3>Execution</h3>
+        <p>Run commands, scripts, upload and download files.</p>
+      </div>
+      <div class="feature-item">
+        <div class="f-icon">🌐</div>
+        <h3>HTTP Testing</h3>
+        <p>Hit endpoints, batch test, load test, wait for readiness.</p>
+      </div>
+      <div class="feature-item">
+        <div class="f-icon">📸</div>
+        <h3>Screenshots</h3>
+        <p>Capture what the app actually looks like. HTML snapshots too.</p>
+      </div>
+      <div class="feature-item">
+        <div class="f-icon">📋</div>
+        <h3>Logs & Monitor</h3>
+        <p>Stream logs, resource stats, live terminal dashboard.</p>
+      </div>
+      <div class="feature-item">
+        <div class="f-icon">🔐</div>
+        <h3>Secrets</h3>
+        <p>Encrypted secrets management. Inject into sandboxes.</p>
+      </div>
+      <div class="feature-item">
+        <div class="f-icon">🌐</div>
+        <h3>Networking</h3>
+        <p>Docker networks, port forwarding, tunneling.</p>
+      </div>
+      <div class="feature-item">
+        <div class="f-icon">💾</div>
+        <h3>Volumes</h3>
+        <p>Persistent storage that survives container restarts.</p>
+      </div>
+      <div class="feature-item">
+        <div class="f-icon">📁</div>
+        <h3>Git</h3>
+        <p>Clone, commit, push — full git inside sandboxes.</p>
+      </div>
+      <div class="feature-item">
+        <div class="f-icon">⏰</div>
+        <h3>Cron</h3>
+        <p>Scheduled tasks running inside your sandboxes.</p>
+      </div>
+      <div class="feature-item">
+        <div class="f-icon">🔀</div>
+        <h3>Compose</h3>
+        <p>Multi-container orchestration, Docker Compose style.</p>
+      </div>
+      <div class="feature-item">
+        <div class="f-icon">🤖</div>
+        <h3>Agent Ready</h3>
+        <p>JSON output, auto-detect, works with any AI agent.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMMANDS -->
+  <section class="commands" id="commands">
+    <div class="section-label">Reference</div>
+    <h2 class="section-title">Commands</h2>
+
+    <table class="cmd-table">
+      <thead>
+        <tr>
+          <th>Command</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><code>meatloaf create</code></td><td class="desc">Create a new sandbox</td></tr>
+        <tr><td><code>meatloaf exec &lt;id&gt; &lt;cmd&gt;</code></td><td class="desc">Run a command in a sandbox</td></tr>
+        <tr><td><code>meatloaf test --url &lt;url&gt;</code></td><td class="desc">HTTP request tester</td></tr>
+        <tr><td><code>meatloaf screenshot &lt;url&gt;</code></td><td class="desc">Capture a screenshot</td></tr>
+        <tr><td><code>meatloaf up ./project</code></td><td class="desc">Full lifecycle: build, run, test</td></tr>
+        <tr><td><code>meatloaf batch &lt;file&gt;</code></td><td class="desc">Run batch tests from JSON</td></tr>
+        <tr><td><code>meatloaf logs &lt;id&gt;</code></td><td class="desc">Stream container logs</td></tr>
+        <tr><td><code>meatloaf shell &lt;id&gt;</code></td><td class="desc">Interactive shell</td></tr>
+        <tr><td><code>meatloaf compose up</code></td><td class="desc">Multi-container orchestration</td></tr>
+        <tr><td><code>meatloaf secrets set</code></td><td class="desc">Manage encrypted secrets</td></tr>
+        <tr><td><code>meatloaf snapshot save</code></td><td class="desc">Save and restore state</td></tr>
+        <tr><td><code>meatloaf bench &lt;url&gt;</code></td><td class="desc">Load testing with percentiles</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- INSTALL -->
+  <section class="install" id="install">
+    <div class="section-label">Get Started</div>
+    <h2 class="section-title">Install in one line</h2>
+
+    <div class="install-box">
+      <code>npm install -g meatloaf-cli</code>
+      <button class="copy-btn" onclick="copyInstall(this)">Copy</button>
+    </div>
+
+    <div class="install-links">
+      <a href="https://www.npmjs.com/package/meatloaf-cli">📦 npm Registry</a>
+      <a href="https://github.com/Atum246/meatloaf">🐙 GitHub</a>
+      <a href="https://github.com/Atum246/meatloaf/blob/main/LICENSE">📄 MIT License</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-links">
+      <a href="https://github.com/Atum246/meatloaf">GitHub</a>
+      <a href="https://www.npmjs.com/package/meatloaf-cli">npm</a>
+      <a href="https://github.com/Atum246/meatloaf/issues">Issues</a>
+    </div>
+    <p>Built for AI agents everywhere. MIT License.</p>
+  </footer>
+
+  <script>
+    function copyInstall(btn) {
+      const text = 'npm install -g meatloaf-cli';
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+  </script>
+
 </body>
 </html>
