@@ -1,6 +1,16 @@
 # 🥩 Meatloaf — AI Agent Sandbox Runtime
 
+[![npm version](https://img.shields.io/npm/v/meatloaf-cli.svg)](https://www.npmjs.com/package/meatloaf-cli)
+[![npm downloads](https://img.shields.io/npm/dm/meatloaf-cli.svg)](https://www.npmjs.com/package/meatloaf-cli)
+[![license](https://img.shields.io/npm/l/meatloaf-cli.svg)](https://github.com/Atum246/meatloaf/blob/main/LICENSE)
+
 **Build. Run. Test. Ship.** 🚀
+
+> 📦 **Install from npm:** `npm install -g meatloaf-cli`
+> 
+> 🔗 **npm:** https://www.npmjs.com/package/meatloaf-cli
+> 
+> 🔗 **GitHub:** https://github.com/Atum246/meatloaf
 
 Meatloaf is an open-source CLI tool that gives AI agents the power to not just write code, but to **build, run, test, and ship** applications autonomously. It bridges the gap between "generating code" and "delivering working software."
 

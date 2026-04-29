@@ -1,6 +1,6 @@
 {
   "name": "meatloaf-cli",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "🥩 Meatloaf — AI Agent Sandbox Runtime. Build. Run. Test. Ship.",
   "main": "src/lib/index.js",
   "bin": {
@@ -35,11 +35,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/meatloaf-ai/meatloaf.git"
+    "url": "git+https://github.com/Atum246/meatloaf.git"
   },
-  "homepage": "https://meatloaf.ai",
+  "homepage": "https://github.com/Atum246/meatloaf#readme",
   "bugs": {
-    "url": "https://github.com/meatloaf-ai/meatloaf/issues"
+    "url": "https://github.com/Atum246/meatloaf/issues"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
