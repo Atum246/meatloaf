@@ -19,7 +19,7 @@ AI agents can write thousands of lines of code, but they can't:
 
 ```bash
 # Install
-npm install -g meatloaf
+npm install -g meatloaf-cli
 
 # Create a sandbox
 meatloaf create --image node:20-alpine
